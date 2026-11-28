@@ -65,6 +65,22 @@ fig = px.scatter_map(
 )
 st.plotly_chart(fig, use_container_width=True)
 
+#~~~~Charts
+st.subheader("Activity over time")
+monthly = (
+    filtered.set_index("time")
+    .resample("MS")
+    .size()
+    .rename("earthquakes")
+    .reset_index()
+)
+fig_time = px.bar(monthly, x="time", y="earthquakes")
+fig_time.update_layout(xaxis_title="Month", yaxis_title="Number of earthquakes", height=350)
+st.plotly_chart(fig_time, use_container_width=True)
+
+st.subheader("Largest earthquakes in this selection")
+top10 = filtered.nlargest(10, "mag")[["time", "mag", "depth", "place"]]
+st.dataframe(top10, hide_index=True, use_container_width=True)
 
 
 #~~~~~~Data table
